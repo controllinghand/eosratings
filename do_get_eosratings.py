@@ -33,10 +33,10 @@ def get_location_info(ip_address):
     return None
 
 def get_bp_json(bp_url):
-    print(bp_url)
+    # print(bp_url)
 
     r = requests.get(bp_url)
-    # print(r.text)
+    print(r.text)
 
     if r.status_code >= 500:
         print('[!] [{0}] Server Error'.format(r.status_code))
@@ -61,12 +61,16 @@ def get_bp_json(bp_url):
 
 
 # Main Program
+# get the current BP list calling a script with curl
+import subprocess
+subprocess.call(['./getBP'])
+
 with open('BPout') as data_file:
     data = json.load(data_file)
 
 i=0
 rank=1
-while i < 10:
+while i < 2:
     bpurl = data["rows"][i]["url"]
     bpowner = data["rows"][i]["owner"]
     bpurlwjson = bpurl + "/bp.json"
@@ -74,12 +78,13 @@ while i < 10:
     # Get json file
     r_bp_json = get_bp_json(bpurlwjson)
     if r_bp_json is not None:
-    #    print(r_bp_json.items())
-        print()
+        org_loc_name = r_bp_json["org"]["location"]["name"]
+        org_loc_cont = r_bp_json["org"]["location"]["country"]
     else:
         print('[!] Request Failed')
 
-    print(rank, bpowner, r_bp_json["org"]["location"]["name"],r_bp_json["org"]["location"]["country"])
+    #print(rank, bpowner, org_loc_name, org_loc_cont)
+    print("%d, %s, %s, %s" % (rank, bpowner, org_loc_name, org_loc_cont))
     i += 1
     rank += 1
 
