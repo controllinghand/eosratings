@@ -35,50 +35,64 @@ def get_location_info(ip_address):
 def get_bp_json(bp_url):
     print(bp_url)
 
-    response = requests.get(bp_url)
+    r = requests.get(bp_url)
+    # print(r.text)
 
-    if response.status_code >= 500:
-        print('[!] [{0}] Server Error'.format(response.status_code))
+    if r.status_code >= 500:
+        print('[!] [{0}] Server Error'.format(r.status_code))
         return None
-    elif response.status_code == 404:
-        print('[!] [{0}] URL not found: [{1}]'.format(response.status_code,api_url))
+    elif r.status_code == 404:
+        print('[!] [{0}] URL not found: [{1}]'.format(r.status_code,api_url))
         return None  
-    elif response.status_code == 401:
-        print('[!] [{0}] Authentication Failed'.format(response.status_code))
+    elif r.status_code == 401:
+        print('[!] [{0}] Authentication Failed'.format(r.status_code))
         return None
-    elif response.status_code == 400:
-        print('[!] [{0}] Bad Request'.format(response.status_code))
+    elif r.status_code == 400:
+        print('[!] [{0}] Bad Request'.format(r.status_code))
         return None
-    elif response.status_code >= 300:
-        print('[!] [{0}] Unexpected Redirect'.format(response.status_code))
+    elif r.status_code >= 300:
+        print('[!] [{0}] Unexpected Redirect'.format(r.status_code))
         return None
-    elif response.status_code == 200:
-        return json.loads(response.content.decode('utf-8'))
+    elif r.status_code == 200:
+        return json.loads(r.content.decode('utf-8'))
     else:
-        print('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
+        print('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(r.status_code, r.content))
     return None
 
 
-ip = 'node1.eosnewyork.io'
-bp_url = 'https://bp.eosnewyork.io/bp.json'
+# Main Program
+with open('BPout') as data_file:
+    data = json.load(data_file)
 
-bp_json = get_bp_json(bp_url)
-location_info = get_location_info(ip)
+i=0
+rank=1
+while i < 10:
+    bpurl = data["rows"][i]["url"]
+    bpowner = data["rows"][i]["owner"]
+    bpurlwjson = bpurl + "/bp.json"
+    
+    # Get json file
+    r_bp_json = get_bp_json(bpurlwjson)
+    if r_bp_json is not None:
+    #    print(r_bp_json.items())
+        print()
+    else:
+        print('[!] Request Failed')
 
-data = '{"json":true,"limit":500}'
+    print(rank, bpowner, r_bp_json["org"]["location"]["name"],r_bp_json["org"]["location"]["country"])
+    i += 1
+    rank += 1
 
-response = requests.post('https://api.eosnewyork.io:443/v1/chain/get_producers', data=data).json()
 
-print(response.items())
 
-if bp_json is not None:
-    print(bp_json.items())
-else:
-    print('[!] Request Failed')
 
-if location_info is not None:
-    print(location_info.items())
-else:
-    print('[!] Request Failed')
+#print(response)
+
+
+#
+#if location_info is not None:
+#    print(location_info.items())
+#else:
+#    print('[!] Request Failed')
 
 

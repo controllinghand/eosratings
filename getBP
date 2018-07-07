@@ -1,0 +1,1 @@
+curl -d '{"json":true,"limit":500}' -s 'https://api.eosnewyork.io:443/v1/chain/get_producers' | json_pp > BPout
