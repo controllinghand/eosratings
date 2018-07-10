@@ -34,11 +34,11 @@ def get_location_info(ip_address):
     return None
 
 def get_bp_json(bp_url):
-    print(bp_url)
+    # print(bp_url)
 
     r = requests.get(bp_url)
     # print(r.text)
-    print(r.status_code)
+    # print(r.status_code)
 
     if r.status_code >= 500:
         print('[!] [{0}] Server Error'.format(r.status_code))
@@ -69,6 +69,8 @@ subprocess.call(['./getBP'])
 
 with open('BPout') as data_file:
     data = json.load(data_file)
+
+print("Rank, BPname, OrgLoc, OrgCtry, Node, JSON (Loc, Ctry,) LOOKUP (Loc, Ctry)")
 
 i=0
 rank=1
@@ -104,7 +106,7 @@ while i < 21:
             print('[!] Request Failed')
 
         #print(rank, bpowner, org_loc_name, org_loc_cont)
-        print("%d, %s, %s, %s, %s, JSON (%s, %s,) REAL (%s, %s)" % (rank, bpowner, org_loc_name, org_loc_cont, n_p_e[0], nod_loc_name, nod_loc_cont, real_cont_name, real_cont_code))
+        print("%d, %s, %s, %s, %s, JSON (%s, %s,) LOOKUP (%s, %s)" % (rank, bpowner, org_loc_name, org_loc_cont, n_p_e[0], nod_loc_name, nod_loc_cont, real_cont_name, real_cont_code))
         
     else:
         print('[!] Request Failed')
