@@ -1,3 +1,4 @@
+# just get list of BP via API
 import json
 import requests
 
@@ -103,24 +104,28 @@ print("Rank, BPname, OrgLoc, OrgCtry, Website")
 
 i=0
 rank=1
-while i < 100:
-    bpurl = data["rows"][i]["url"]
-    bpowner = data["rows"][i]["owner"]
-    bpurlwjson = bpurl + "/bp.json"
+while True:
+
+    try :
+        bpurl = data["rows"][i]["url"]
+        bpowner = data["rows"][i]["owner"]
+    except IndexError:
+        break
+    # bpurlwjson = bpurl + "/bp.json"
     
     # Get json file
-    r_bp_json = get_bp_json(bpurlwjson)
-    if r_bp_json is not None:
-        org_loc_name = r_bp_json["org"]["location"]["name"]
-        org_loc_cont = r_bp_json["org"]["location"]["country"]
+    # r_bp_json = get_bp_json(bpurlwjson)
+    # if r_bp_json is not None:
+    #    org_loc_name = r_bp_json["org"]["location"]["name"]
+    #    org_loc_cont = r_bp_json["org"]["location"]["country"]
         
-        try :
+    #    try :
             # nodes_p2p_endpoint = r_bp_json["nodes"][0]["p2p_endpoint"]
-            org_loc_name = r_bp_json["org"]["location"]["name"]
-        except KeyError:
-            print("The key does not exist!")
+            #org_loc_name = r_bp_json["org"]["location"]["name"]
+        #except KeyError:
+            #print("The key does not exist!")
             # nodes_p2p_endpoint = ""
-            org_loc_name = ""
+            #org_loc_name = ""
 
         
         #n_p_e = nodes_p2p_endpoint.split(':')
@@ -136,11 +141,11 @@ while i < 100:
             #print('[!] Request Failed')
 
         #print(rank, bpowner, org_loc_name, org_loc_cont)
-        print("%d, %s, %s, %s, %s" % (rank, bpowner, org_loc_name, org_loc_cont, bpurl ))
+    print("%d, %s, %s" % (rank, bpowner, bpurl))
         
-    else:
+    #else:
         # print('[!] Request Failed')
-        print("%d, %s, %s, %s, %s Website or JSON Error" % (rank, bpowner, "NONE", "NONE", bpurl ))
+        #print("%d, %s, %s, %s, %s Website or JSON Error" % (rank, bpowner, "NONE", "NONE", bpurl ))
 
     i += 1
     rank += 1
